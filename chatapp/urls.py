@@ -20,10 +20,33 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.http import JsonResponse
 
+from drf_yasg import openapi
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Authors Haven API",
+        default_version="v1",
+        description="Api endpoints for Autors Haven API Course",
+        contact=openapi.Contact(email="mygmail@gmail.com"),
+        terms_of_service="https://www.google.com/policies/terms/",
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
 def health(request):
     return JsonResponse({"status": "ok"})
 
 urlpatterns = [
+        path("redoc/", schema_view.with_ui("redoc", cache_timeout=0)),
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path("schema.json", schema_view.without_ui(cache_timeout=0), name="schema-json"),
     path('admin/', admin.site.urls),   path("", include("chat.urls")),
      path("health/", health),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(
