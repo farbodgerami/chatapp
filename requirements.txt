@@ -16,3 +16,4 @@ channels[daphne]
 channels-redis
  
 django-redis
+drf_yasg
