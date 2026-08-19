@@ -10,7 +10,9 @@ from django.db.models import Q
 
 
 class Main(View):
+    """Display the main landing page and redirect authenticated users to the home page."""
     def get(self, request):
+        """Render the main page for unauthenticated users."""
    
         if request.user.is_authenticated:
             return redirect("home")
@@ -18,10 +20,13 @@ class Main(View):
 
 
 class Login(View):
+    """Handle user authentication and display the login page."""
     def get(self, request):
+        """Render the login page."""
         return render(request=request, template_name="chat/login.html")
 
     def post(self, request):
+        """Authenticate the submitted credentials and log the user in if valid."""
         data = request.POST.dict()
         try:
             username = data.get("username")
@@ -41,10 +46,13 @@ class Login(View):
 
 
 class Register(View):
+    """Handle new user registration and automatically log in registered users."""
     def get(self, request):
+        """Render the user registration page."""
         return render(request=request, template_name="chat/register.html")
 
     def post(self, request):
+        """Create a new user account from the submitted registration data."""
         context = {}
         data = request.POST.dict()
         try:
@@ -75,15 +83,17 @@ class Register(View):
 
 
 class Logout(View):
+    """Log out the current user and redirect them to the main page."""
     def get(self, request):
-    
+        """Log out the current user."""
         logout(request)
         return redirect("main")
 
 
 class Home(View):
+    """Display the authenticated user's home page and available users."""
     def get(self, request):
-       
+        """Render the home page for authenticated users."""
         if request.user.is_authenticated:
             users = User.objects.all()
             context = {"user": request.user, "users": users}
@@ -94,7 +104,9 @@ class Home(View):
 
 
 class ChatPerson(View):
+    """Display a conversation between the authenticated user and another user."""
     def get(self, request, id):
+        """Retrieve and display exchanged messages and mark received messages as seen."""
  
         person = User.objects.get(id=id)
         print(person)
